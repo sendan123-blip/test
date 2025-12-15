@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE DEFTABLE SYSTEM "deftable.dtd">
+<DEFTABLE>
+
+    <FOLDER NAME="CLUSTER_01_LINEAR" DATACENTER="CTM_PROD" TYPE="Table">
+        
+        <JOB JOBNAME="LINEAR_START_01" TASKTYPE="Command">
+            <OUTCOND NAME="LINEAR_START_01" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+
+        <JOB JOBNAME="LINEAR_STEP_02" TASKTYPE="Command">
+            <INCOND NAME="LINEAR_START_01" ODATE="ODAT" SIGN="+"/>
+            <OUTCOND NAME="LINEAR_STEP_02" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+
+        <JOB JOBNAME="LINEAR_STEP_03" TASKTYPE="Command">
+            <INCOND NAME="LINEAR_STEP_02" ODATE="ODAT" SIGN="+"/>
+            <OUTCOND NAME="LINEAR_STEP_03" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+
+        <JOB JOBNAME="LINEAR_END_04" TASKTYPE="Command">
+            <INCOND NAME="LINEAR_STEP_03" ODATE="ODAT" SIGN="+"/>
+            </JOB>
+
+    </FOLDER>
+
+
+    <FOLDER NAME="CLUSTER_02_FAN_OUT" DATACENTER="CTM_PROD" TYPE="Table">
+        
+        <JOB JOBNAME="MANAGER_JOB" TASKTYPE="Command">
+            <OUTCOND NAME="MANAGER_JOB" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+        
+        <JOB JOBNAME="WORKER_A" TASKTYPE="Command">
+            <INCOND NAME="MANAGER_JOB" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+        <JOB JOBNAME="WORKER_B" TASKTYPE="Command">
+            <INCOND NAME="MANAGER_JOB" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+        <JOB JOBNAME="WORKER_C" TASKTYPE="Command">
+            <INCOND NAME="MANAGER_JOB" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+
+    </FOLDER>
+
+
+    <FOLDER NAME="CLUSTER_03_FAN_IN" DATACENTER="CTM_PROD" TYPE="Table">
+        
+        <JOB JOBNAME="SOURCE_FEED_X" TASKTYPE="Command">
+            <OUTCOND NAME="SOURCE_FEED_X" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+        <JOB JOBNAME="SOURCE_FEED_Y" TASKTYPE="Command">
+            <OUTCOND NAME="SOURCE_FEED_Y" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+        <JOB JOBNAME="SOURCE_FEED_Z" TASKTYPE="Command">
+            <OUTCOND NAME="SOURCE_FEED_Z" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+
+        <JOB JOBNAME="AGGREGATOR_FINAL" TASKTYPE="Command">
+            <INCOND NAME="SOURCE_FEED_X" ODATE="ODAT" SIGN="+"/>
+            <INCOND NAME="SOURCE_FEED_Y" ODATE="ODAT" SIGN="+"/>
+            <INCOND NAME="SOURCE_FEED_Z" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+
+    </FOLDER>
+
+
+    <FOLDER NAME="CLUSTER_04_MESH" DATACENTER="CTM_PROD" TYPE="Table">
+        
+        <JOB JOBNAME="MESH_INIT_1" TASKTYPE="Command">
+            <OUTCOND NAME="MESH_INIT_1" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+        <JOB JOBNAME="MESH_INIT_2" TASKTYPE="Command">
+            <OUTCOND NAME="MESH_INIT_2" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+
+        <JOB JOBNAME="MESH_PROCESS_A" TASKTYPE="Command">
+            <INCOND NAME="MESH_INIT_1" ODATE="ODAT" SIGN="+"/>
+            <INCOND NAME="MESH_INIT_2" ODATE="ODAT" SIGN="+"/>
+            <OUTCOND NAME="MESH_PROCESS_A" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+
+        <JOB JOBNAME="MESH_PROCESS_B" TASKTYPE="Command">
+            <INCOND NAME="MESH_INIT_1" ODATE="ODAT" SIGN="+"/>
+            <INCOND NAME="MESH_INIT_2" ODATE="ODAT" SIGN="+"/>
+            <OUTCOND NAME="MESH_PROCESS_B" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+        
+        <JOB JOBNAME="MESH_FINALIZER" TASKTYPE="Command">
+            <INCOND NAME="MESH_PROCESS_A" ODATE="ODAT" SIGN="+"/>
+            <INCOND NAME="MESH_PROCESS_B" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+
+    </FOLDER>
+
+</DEFTABLE>
