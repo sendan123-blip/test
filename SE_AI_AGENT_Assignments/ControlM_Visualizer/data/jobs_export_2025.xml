@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE DEFTABLE SYSTEM "deftable.dtd">
+
+<DEFTABLE> 
+
+    <FOLDER 
+        DATACENTER="CTMSERVER"
+        APPLICATION="CrossFolderApp"
+        NAME="FOLDER_A_PREP" 
+        OWNER="user_a"
+        TYPE="Table" 
+        RUN_AS_USER="os_user"
+        RUN_AS_NODE="Node_Group_Name"
+        XML_VERSION="2.0">
+
+        <JOB JOBISN="1" JOBNAME="JOB_001_A_INIT" TASKTYPE="Command" CMD="echo Start of Folder A">
+            <OUTCOND NAME="JOB_001A-OK" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+
+        <JOB JOBISN="2" JOBNAME="JOB_002_A_CLEAN" TASKTYPE="Command" CMD="echo Cleanse data">
+            <INCOND NAME="JOB_001A-OK" ODATE="ODAT" SIGN="+" />
+            <OUTCOND NAME="JOB_002A-OK" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+
+        <JOB JOBISN="3" JOBNAME="JOB_003_A_PARTIAL_LOAD" TASKTYPE="Command" CMD="echo Load stage table 1">
+            <INCOND NAME="JOB_002A-OK" ODATE="ODAT" SIGN="+" />
+            <OUTCOND NAME="JOB_003A-OK" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+        
+        <JOB JOBISN="4" JOBNAME="JOB_004_A_VALIDATE" TASKTYPE="Command" CMD="echo Validate stage 1">
+            <INCOND NAME="JOB_003A-OK" ODATE="ODAT" SIGN="+" />
+            
+            <OUTCOND NAME="FOLDER_A_COMPLETE-OK" ODATE="ODAT" SIGN="+"/> 
+        </JOB>
+        
+    </FOLDER>
+
+    <FOLDER 
+        DATACENTER="CTMSERVER"
+        APPLICATION="CrossFolderApp"
+        NAME="FOLDER_B_FINALIZE" 
+        OWNER="user_b"
+        TYPE="Table" 
+        RUN_AS_USER="os_user"
+        RUN_AS_NODE="Node_Group_Name"
+        XML_VERSION="2.0">
+
+        <JOB JOBISN="5" JOBNAME="JOB_005_B_MERGE" TASKTYPE="Command" CMD="echo Merge stage 1 and 2">
+            
+            <INCOND NAME="FOLDER_A_COMPLETE-OK" ODATE="ODAT" SIGN="+" /> 
+            
+            <OUTCOND NAME="JOB_005B-OK" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+
+        <JOB JOBISN="6" JOBNAME="JOB_006_B_REPORT" TASKTYPE="Command" CMD="echo Generate final report">
+            <INCOND NAME="JOB_005B-OK" ODATE="ODAT" SIGN="+" />
+            <OUTCOND NAME="JOB_006B-OK" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+        
+        <JOB JOBISN="7" JOBNAME="JOB_007_B_DISTRIBUTE" TASKTYPE="Command" CMD="echo Distribute report to stakeholders">
+            <INCOND NAME="JOB_006B-OK" ODATE="ODAT" SIGN="+" />
+            <OUTCOND NAME="JOB_007B-OK" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+
+        <JOB JOBISN="8" JOBNAME="JOB_008_B_ARCHIVE" TASKTYPE="Command" CMD="echo Archive source files">
+            <INCOND NAME="JOB_007B-OK" ODATE="ODAT" SIGN="+" />
+            <OUTCOND NAME="JOB_008B-OK" ODATE="ODAT" SIGN="+"/>
+        </JOB>
+        
+    </FOLDER>
+
+    </DEFTABLE>
